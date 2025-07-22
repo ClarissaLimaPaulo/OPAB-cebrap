@@ -17,7 +17,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            background: #1e3c72;
             min-height: 100vh;
             color: #333;
         }
@@ -31,7 +31,7 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #2c3e50, #3498db);
+            background: #1e3c72;
             color: white;
             padding: 2rem;
             text-align: center;
@@ -163,6 +163,36 @@
             border-radius: 10px;
             padding: 1rem;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            height: 500px;
+            overflow-y: auto;
+        }
+
+        .event-item {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .event-item:hover {
+            background: #e8f4f8;
+            transform: translateX(5px);
+        }
+
+        .event-header {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+        }
+
+        .event-details {
+            display: none;
+            padding-top: 0.5rem;
+            border-top: 1px solid #ddd;
+            margin-top: 0.5rem;
         }
 
         .chart-container {
@@ -210,7 +240,7 @@
 <body>
     <div class="container">
         <header class="header">
-            <h1>🏛️ Observatório de Assassinatos Políticos</h1>
+            <h1>Observatório de Assassinatos Políticos</h1>
             <p>Base de Dados de Assassinatos Políticos Brasileiros (BAP-Cebrap) • 2003-2023</p>
         </header>
 
@@ -303,33 +333,10 @@
 
             <!-- TIMELINE TAB -->
             <div id="timeline-tab" class="tab-content">
-                <h2>Linha do Tempo por Mandatos Presidenciais</h2>
+                <h2>Linha do Tempo por Estado</h2>
                 
-                <div class="timeline-container">
-                    <canvas id="timelineChart"></canvas>
-                </div>
-
-                <div id="presidential-terms">
-                    <div class="presidential-term">
-                        <div class="term-title">Luiz Inácio Lula da Silva (2003-2010)</div>
-                        <div>Casos registrados: <span id="lula-cases">0</span></div>
-                    </div>
-                    <div class="presidential-term">
-                        <div class="term-title">Dilma Rousseff (2011-2016)</div>
-                        <div>Casos registrados: <span id="dilma-cases">0</span></div>
-                    </div>
-                    <div class="presidential-term">
-                        <div class="term-title">Michel Temer (2016-2018)</div>
-                        <div>Casos registrados: <span id="temer-cases">0</span></div>
-                    </div>
-                    <div class="presidential-term">
-                        <div class="term-title">Jair Bolsonaro (2019-2022)</div>
-                        <div>Casos registrados: <span id="bolsonaro-cases">0</span></div>
-                    </div>
-                    <div class="presidential-term">
-                        <div class="term-title">Luiz Inácio Lula da Silva (2023-presente)</div>
-                        <div>Casos registrados: <span id="lula2-cases">0</span></div>
-                    </div>
+                <div class="timeline-container" id="timeline-events">
+                    <!-- Events will be loaded here -->
                 </div>
             </div>
 
@@ -484,9 +491,14 @@ FICT040,Tentativa de assassinato,Caso Pedro Costa Lima,Ana Souza Gomes,,Brasilei
                 map.remove();
             }
             
-            map = L.map('map').setView([-15.7942, -47.8822], 4);
+            map = L.map('map', {
+                zoomControl: false,
+                attributionControl: false
+            }).setView([-15.7942, -47.8822], 4);
             
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            // Add gray base map
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                maxZoom: 19,
                 attribution: '© OpenStreetMap contributors'
             }).addTo(map);
 
@@ -552,72 +564,58 @@ FICT040,Tentativa de assassinato,Caso Pedro Costa Lima,Ana Souza Gomes,,Brasilei
 
         // Timeline functionality
         function initTimeline() {
-            const ctx = document.getElementById('timelineChart').getContext('2d');
+            const timelineContainer = document.getElementById('timeline-events');
+            timelineContainer.innerHTML = '';
             
-            // Group data by year
-            const yearCounts = {};
-            data.forEach(item => {
-                const year = item.Ano;
-                yearCounts[year] = (yearCounts[year] || 0) + 1;
+            // Sort data by year and month
+            const sortedData = [...data].sort((a, b) => {
+                const yearA = parseInt(a.Ano);
+                const yearB = parseInt(b.Ano);
+                if (yearA !== yearB) return yearA - yearB;
+                return parseInt(a.Mês) - parseInt(b.Mês);
             });
 
-            const years = Object.keys(yearCounts).sort();
-            const counts = years.map(year => yearCounts[year]);
-
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: years,
-                    datasets: [{
-                        label: 'Casos por Ano',
-                        data: counts,
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            display: true
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                stepSize: 1
-                            }
-                        }
-                    }
+            // Group data by state
+            const eventsByState = {};
+            sortedData.forEach(item => {
+                if (!eventsByState[item.UF]) {
+                    eventsByState[item.UF] = [];
                 }
+                eventsByState[item.UF].push(item);
             });
 
-            // Update presidential term counts
-            updatePresidentialTerms();
-        }
-
-        function updatePresidentialTerms() {
-            const lulaYears1 = ['2003', '2004', '2005', '2006', '2007', '2008', '2009', '2010'];
-            const dilmaYears = ['2011', '2012', '2013', '2014', '2015', '2016'];
-            const temerYears = ['2016', '2017', '2018'];
-            const bolsonaroYears = ['2019', '2020', '2021', '2022'];
-            const lulaYears2 = ['2023'];
-
-            const lulaCases1 = data.filter(d => lulaYears1.includes(d.Ano)).length;
-            const dilmaCases = data.filter(d => dilmaYears.includes(d.Ano)).length;
-            const temerCases = data.filter(d => temerYears.includes(d.Ano)).length;
-            const bolsonaroCases = data.filter(d => bolsonaroYears.includes(d.Ano)).length;
-            const lulaCases2 = data.filter(d => lulaYears2.includes(d.Ano)).length;
-
-            document.getElementById('lula-cases').textContent = lulaCases1;
-            document.getElementById('dilma-cases').textContent = dilmaCases;
-            document.getElementById('temer-cases').textContent = temerCases;
-            document.getElementById('bolsonaro-cases').textContent = bolsonaroCases;
-            document.getElementById('lula2-cases').textContent = lulaCases2;
+            // Create timeline items
+            Object.keys(eventsByState).sort().forEach(state => {
+                const stateEvents = eventsByState[state];
+                
+                stateEvents.forEach(event => {
+                    const eventItem = document.createElement('div');
+                    eventItem.className = 'event-item';
+                    
+                    const eventHeader = document.createElement('div');
+                    eventHeader.className = 'event-header';
+                    eventHeader.textContent = `${event.UF} • ${event.Mês}/${event.Ano} • ${event['Vítima_Nome']}`;
+                    
+                    const eventDetails = document.createElement('div');
+                    eventDetails.className = 'event-details';
+                    eventDetails.innerHTML = `
+                        <p><strong>Tipo:</strong> ${event['Tipo_ação_vítima']}</p>
+                        <p><strong>Ocupação:</strong> ${event['Vítima_Ocupação_1']}</p>
+                        <p><strong>Cidade:</strong> ${event.Cidade}</p>
+                        <p><strong>Motivação:</strong> ${event.Disputa}</p>
+                        <p><strong>Método:</strong> ${event['Método_1']}</p>
+                    `;
+                    
+                    eventItem.appendChild(eventHeader);
+                    eventItem.appendChild(eventDetails);
+                    
+                    eventItem.addEventListener('click', () => {
+                        eventDetails.style.display = eventDetails.style.display === 'block' ? 'none' : 'block';
+                    });
+                    
+                    timelineContainer.appendChild(eventItem);
+                });
+            });
         }
 
         // Data charts functionality
