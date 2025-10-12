@@ -1,0 +1,420 @@
+// dataProcessor.js
+// This script loads and processes the BAP CSV data
+
+class BAPDataProcessor {
+    constructor() {
+        this.rawData = [];
+        this.processedData = {};
+    }
+
+    // Load CSV file
+    async loadCSV(filePath) {
+        try {
+            const response = await fetch(filePath);
+            const csvText = await response.text();
+            this.rawData = this.parseCSV(csvText);
+            this.processData();
+            return this.processedData;
+        } catch (error) {
+            console.error('Error loading CSV:', error);
+            throw error;
+        }
+    }
+
+    // Parse CSV text to array of objects
+    parseCSV(text) {
+        const lines = text.split('\n');
+        const headers = lines[0].split(',').map(h => h.trim());
+        const data = [];
+
+        for (let i = 1; i < lines.length; i++) {
+            if (!lines[i].trim()) continue;
+            
+            const values = this.parseCSVLine(lines[i]);
+            const row = {};
+            
+            headers.forEach((header, index) => {
+                row[header] = values[index] ? values[index].trim() : '';
+            });
+            
+            data.push(row);
+        }
+
+        return data;
+    }
+
+    // Handle CSV line with commas inside quotes
+    parseCSVLine(line) {
+        const values = [];
+        let current = '';
+        let inQuotes = false;
+
+        for (let i = 0; i < line.length; i++) {
+            const char = line[i];
+            
+            if (char === '"') {
+                inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+                values.push(current);
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        values.push(current);
+        
+        return values;
+    }
+
+    // Process raw data into useful formats
+    processData() {
+        this.processedData = {
+            total: this.rawData.length,
+            byYear: this.groupByYear(),
+            byState: this.groupByState(),
+            byCity: this.groupByCityWithCoordinates(),
+            byType: this.groupByType(),
+            byGender: this.groupByGender(),
+            byVictimType: this.groupByVictimType(),
+            byWeapon: this.groupByWeapon(),
+            timeline: this.createTimeline(),
+            byPresidentialTerm: this.groupByPresidentialTerm(),
+            cases: this.getAllCases()
+        };
+    }
+
+    // Group data by year
+    groupByYear() {
+        const yearData = {};
+        
+        this.rawData.forEach(row => {
+            const year = row.Ano;
+            if (!year) return;
+            
+            if (!yearData[year]) {
+                yearData[year] = {
+                    total: 0,
+                    assassinato: 0,
+                    tentativa: 0,
+                    ameaça: 0
+                };
+            }
+            
+            yearData[year].total++;
+            const tipo = row['Tipo_ação_vítima']?.toLowerCase();
+            if (tipo === 'assassinato') yearData[year].assassinato++;
+            else if (tipo === 'tentativa') yearData[year].tentativa++;
+            else if (tipo === 'ameaça') yearData[year].ameaça++;
+        });
+        
+        return yearData;
+    }
+
+    // Group data by state
+    groupByState() {
+        const stateData = {};
+        
+        this.rawData.forEach(row => {
+            const state = row.UF;
+            if (!state) return;
+            
+            if (!stateData[state]) {
+                stateData[state] = {
+                    total: 0,
+                    cities: new Set()
+                };
+            }
+            
+            stateData[state].total++;
+            if (row.Cidade) {
+                stateData[state].cities.add(row.Cidade);
+            }
+        });
+        
+        // Convert Set to array
+        Object.keys(stateData).forEach(state => {
+            stateData[state].cities = Array.from(stateData[state].cities);
+        });
+        
+        return stateData;
+    }
+
+    // Group by city with coordinates (you'll need to add coordinates)
+    groupByCityWithCoordinates() {
+        const cityData = {};
+        
+        this.rawData.forEach(row => {
+            const city = row.Cidade;
+            const state = row.UF;
+            if (!city || !state) return;
+            
+            const key = `${city}, ${state}`;
+            
+            if (!cityData[key]) {
+                cityData[key] = {
+                    city: city,
+                    state: state,
+                    count: 0,
+                    lat: null, // You'll need to add coordinates
+                    lng: null,
+                    cases: []
+                };
+            }
+            
+            cityData[key].count++;
+            cityData[key].cases.push({
+                description: row['Descrição'],
+                date: `${row.Dia}/${row.Mês}/${row.Ano}`,
+                type: row['Tipo_ação_vítima']
+            });
+        });
+        
+        return cityData;
+    }
+
+    // Group by assassination type
+    groupByType() {
+        const typeData = {
+            assassinato: 0,
+            tentativa: 0,
+            ameaça: 0
+        };
+        
+        this.rawData.forEach(row => {
+            const tipo = row['Tipo_ação_vítima']?.toLowerCase();
+            if (typeData.hasOwnProperty(tipo)) {
+                typeData[tipo]++;
+            }
+        });
+        
+        return typeData;
+    }
+
+    // Group by gender
+    groupByGender() {
+        const genderData = {};
+        
+        this.rawData.forEach(row => {
+            const gender = row['Gênero_predito'];
+            if (!gender) return;
+            
+            if (!genderData[gender]) {
+                genderData[gender] = 0;
+            }
+            genderData[gender]++;
+        });
+        
+        return {
+            data: genderData,
+            note: 'Gênero predito utilizando Machine Learning'
+        };
+    }
+
+    // Group by victim type
+    groupByVictimType() {
+        const victimTypeData = {
+            macro: {},
+            micro: {}
+        };
+        
+        this.rawData.forEach(row => {
+            const macro = row['Vítima_Tipo_Macro-Grupo'];
+            const micro = row['Vítima_Tipo_Grupo'];
+            
+            if (macro) {
+                victimTypeData.macro[macro] = (victimTypeData.macro[macro] || 0) + 1;
+            }
+            
+            if (micro) {
+                victimTypeData.micro[micro] = (victimTypeData.micro[micro] || 0) + 1;
+            }
+        });
+        
+        return victimTypeData;
+    }
+
+    // Group by weapon/instrument
+    groupByWeapon() {
+        const weaponData = {};
+        
+        this.rawData.forEach(row => {
+            const weapon = row.Instrumento_1;
+            if (!weapon) return;
+            
+            if (!weaponData[weapon]) {
+                weaponData[weapon] = 0;
+            }
+            weaponData[weapon]++;
+        });
+        
+        // Sort by frequency
+        return Object.entries(weaponData)
+            .sort((a, b) => b[1] - a[1])
+            .reduce((obj, [key, val]) => {
+                obj[key] = val;
+                return obj;
+            }, {});
+    }
+
+    // Create timeline data
+    createTimeline() {
+        const timeline = [];
+        
+        this.rawData.forEach(row => {
+            const year = row.Ano;
+            const month = row.Mês;
+            const day = row.Dia;
+            
+            if (!year || !month || !day) return;
+            
+            timeline.push({
+                date: `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
+                year: year,
+                month: month,
+                day: day,
+                type: row['Tipo_ação_vítima'],
+                city: row.Cidade,
+                state: row.UF,
+                description: row['Descrição'],
+                victimType: row['Vítima_Tipo_Grupo']
+            });
+        });
+        
+        // Sort by date
+        timeline.sort((a, b) => new Date(a.date) - new Date(b.date));
+        
+        return timeline;
+    }
+
+    // Group by presidential term
+    groupByPresidentialTerm() {
+        const terms = {
+            'Lula I (2003-2006)': { start: 2003, end: 2006, cases: [] },
+            'Lula II (2007-2010)': { start: 2007, end: 2010, cases: [] },
+            'Dilma I (2011-2014)': { start: 2011, end: 2014, cases: [] },
+            'Dilma II (2015-2016)': { start: 2015, end: 2016, cases: [] },
+            'Temer (2016-2018)': { start: 2016, end: 2018, cases: [] },
+            'Bolsonaro (2019-2022)': { start: 2019, end: 2022, cases: [] },
+            'Lula III (2023)': { start: 2023, end: 2023, cases: [] }
+        };
+        
+        this.rawData.forEach(row => {
+            const year = parseInt(row.Ano);
+            if (!year) return;
+            
+            Object.keys(terms).forEach(termName => {
+                const term = terms[termName];
+                if (year >= term.start && year <= term.end) {
+                    term.cases.push(row);
+                }
+            });
+        });
+        
+        // Calculate statistics for each term
+        Object.keys(terms).forEach(termName => {
+            const term = terms[termName];
+            const years = term.end - term.start + 1;
+            
+            term.total = term.cases.length;
+            term.average = (term.total / years).toFixed(1);
+            term.byType = {
+                assassinato: term.cases.filter(c => c['Tipo_ação_vítima']?.toLowerCase() === 'assassinato').length,
+                tentativa: term.cases.filter(c => c['Tipo_ação_vítima']?.toLowerCase() === 'tentativa').length,
+                ameaça: term.cases.filter(c => c['Tipo_ação_vítima']?.toLowerCase() === 'ameaça').length
+            };
+        });
+        
+        return terms;
+    }
+
+    // Get all cases with full details
+    getAllCases() {
+        return this.rawData.map((row, index) => ({
+            id: index + 1,
+            type: row['Tipo_ação_vítima'],
+            description: row['Descrição'],
+            victimMacroType: row['Vítima_Tipo_Macro-Grupo'],
+            victimMicroType: row['Vítima_Tipo_Grupo'],
+            date: {
+                day: row.Dia,
+                month: row.Mês,
+                year: row.Ano,
+                full: `${row.Dia}/${row.Mês}/${row.Ano}`
+            },
+            location: {
+                city: row.Cidade,
+                state: row.UF
+            },
+            weapon: row.Instrumento_1,
+            gender: row['Gênero_predito']
+        }));
+    }
+
+    // Filter data based on criteria
+    filterData(filters) {
+        let filtered = [...this.rawData];
+        
+        if (filters.startYear && filters.endYear) {
+            filtered = filtered.filter(row => {
+                const year = parseInt(row.Ano);
+                return year >= filters.startYear && year <= filters.endYear;
+            });
+        }
+        
+        if (filters.states && filters.states.length > 0) {
+            filtered = filtered.filter(row => filters.states.includes(row.UF));
+        }
+        
+        if (filters.types && filters.types.length > 0) {
+            filtered = filtered.filter(row => 
+                filters.types.includes(row['Tipo_ação_vítima']?.toLowerCase())
+            );
+        }
+        
+        if (filters.genders && filters.genders.length > 0) {
+            filtered = filtered.filter(row => 
+                filters.genders.includes(row['Gênero_predito'])
+            );
+        }
+        
+        if (filters.victimTypes && filters.victimTypes.length > 0) {
+            filtered = filtered.filter(row => 
+                filters.victimTypes.includes(row['Vítima_Tipo_Grupo'])
+            );
+        }
+        
+        return filtered;
+    }
+
+    // Get statistics for filtered data
+    getStatistics(filteredData = this.rawData) {
+        return {
+            total: filteredData.length,
+            byType: {
+                assassinato: filteredData.filter(r => r['Tipo_ação_vítima']?.toLowerCase() === 'assassinato').length,
+                tentativa: filteredData.filter(r => r['Tipo_ação_vítima']?.toLowerCase() === 'tentativa').length,
+                ameaça: filteredData.filter(r => r['Tipo_ação_vítima']?.toLowerCase() === 'ameaça').length
+            },
+            byGender: this.countByField(filteredData, 'Gênero_predito'),
+            byState: this.countByField(filteredData, 'UF'),
+            byWeapon: this.countByField(filteredData, 'Instrumento_1')
+        };
+    }
+
+    // Helper: count occurrences by field
+    countByField(data, field) {
+        const counts = {};
+        data.forEach(row => {
+            const value = row[field];
+            if (value) {
+                counts[value] = (counts[value] || 0) + 1;
+            }
+        });
+        return counts;
+    }
+}
+
+// Export for use in other files
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = BAPDataProcessor;
+}
