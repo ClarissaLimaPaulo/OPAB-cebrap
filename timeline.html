@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OPAB-CEBRAP — Linha do Tempo</title>
+<style>
+body{margin:0;font-family:Inter,Arial;background:linear-gradient(180deg,#070708,#0e0e10);color:#eaeaea}
+header{padding:12px 18px;background:rgba(0,0,0,0.25);display:flex;align-items:center;justify-content:space-between}
+.card{background:rgba(255,255,255,0.03);padding:12px;border-radius:10px;margin:12px}
+#chartWrap{padding:12px}
+canvas{background:rgba(255,255,255,0.02);border-radius:10px}
+</style>
+</head>
+<body>
+<header>
+<div style="display:flex;gap:12px;align-items:center">
+<a style="color:#ddd;text-decoration:none" href="index.html">← Voltar</a>
+<h1>Linha do Tempo — OPAB-CEBRAP</h1>
+</div>
+</header>
+
+
+<div id="chartWrap" class="card">
+<canvas id="timelineChart" width="1200" height="420"></canvas>
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/papaparse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+function safeParseInt(v){ const n=parseInt(v,10); return Number.isNaN(n)?null:n }
+
+
+Papa.parse('data/BAP
