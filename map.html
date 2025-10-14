@@ -1,0 +1,89 @@
+<!doctype html>
+<button id="applyFilter">Aplicar</button>
+<button id="resetFilter">Reset</button>
+</div>
+<div class="card" id="legend">Carregando dados...</div>
+</div>
+
+
+<div id="map"></div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/papaparse/5.4.1/papaparse.min.js" integrity="sha512-+82b6+5gq2f3iR7Q0YV6n7k1jKQJv1ZqF0x9pV+E1K0GqF8+2x2+7J9b1A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-QV2z8YpWQqgP3Q9tWmZ+2e3qz7b1wq1c9m4Gzv1k2kM=" crossorigin=""></script>
+<script>
+// Defensive helper to parse lat/lng when CSV headers vary
+function parseLatLng(row) {
+const latKeys = ['latitude',' Latitude',' lat','lat','lat '];
+const lngKeys = ['longitude','Longitude',' longitude GO1',' longitude','lon','lng','long'];
+let lat=null,lng=null;
+for(const k of Object.keys(row)){
+const v = (row[k] || '').trim();
+if(lat==null && (k.toLowerCase().includes('lat') || k.toLowerCase().includes('latitude'))) { const n=parseFloat(v); if(!Number.isNaN(n)) lat=n; }
+if(lng==null && (k.toLowerCase().includes('long')||k.toLowerCase().includes('lon'))) { const n=parseFloat(v); if(!Number.isNaN(n)) lng=n; }
+}
+// fallback: try common keys
+if(lat==null){ for(const k of latKeys) if(row[k]){ const n=parseFloat(row[k]); if(!Number.isNaN(n)){lat=n;break}} }
+if(lng==null){ for(const k of lngKeys) if(row[k]){ const n=parseFloat(row[k]); if(!Number.isNaN(n)){lng=n;break}} }
+return {lat, lng};
+}
+
+
+const map = L.map('map').setView([-15.8,-47.9],4);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+maxZoom:18,
+attribution:'© OpenStreetMap contributors'
+}).addTo(map);
+
+
+let allData = [];
+let markers = L.layerGroup().addTo(map);
+
+
+function addMarkers(data){
+markers.clearLayers();
+data.forEach(r=>{
+const {lat,lng} = parseLatLng(r);
+if(lat==null || lng==null) return; // skip
+const popup = `<b>${r.Caso||r.Caso||'Caso'}</b><br>${r.Cidade? (r.Cidade+' - '+r.UF):''}<br><small>${(r.Descrição||r.Descricao||'')}</small>`;
+L.circleMarker([lat,lng],{radius:6,fillOpacity:0.9,weight:0.5,color:'#fff',fillColor:'#b85050'}).bindPopup(popup).addTo(markers);
+});
+document.getElementById('legend').innerText = `Mostrando ${data.length} registros (total: ${allData.length})`;
+}
+
+
+function filterByYear(y){
+if(!y) return [...allData];
+return allData.filter(r=>{
+const a = parseInt(r.Ano || r.ano || r.Year || r.year,10);
+return !isNaN(a) && a===y;
+});
+}
+
+
+Papa.parse('data/BAP - BAP.csv',{
+download:true,
+header:true,
+skipEmptyLines:true,
+complete: function(results){
+allData = results.data;
+// defensive copy
+const initial = [...allData];
+addMarkers(initial);
+},
+error:function(err){ document.getElementById('legend').innerText = 'Erro ao carregar CSV: ' + err.message }
+});
+
+
+document.getElementById('applyFilter').addEventListener('click',()=>{
+const y = parseInt(document.getElementById('yearFilter').value,10);
+const data = filterByYear(y);
+addMarkers(data);
+if(data.length>0){ const p = parseLatLng(data[0]); if(p.lat && p.lng) map.setView([p.lat,p.lng],6); }
+});
+document.getElementById('resetFilter').addEventListener('click',()=>{
+document.getElementById('yearFilter').value=''; addMarkers([...allData]); map.setView([-15.8,-47.9],4);
+});
+</script>
+</body>
+</html>
