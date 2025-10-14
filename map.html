@@ -18,7 +18,7 @@
             --text-muted: #9fa8c7;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 100%);
             color: var(--text-light);
             line-height: 1.6;
@@ -69,16 +69,9 @@
             overflow-y: auto;
             border-right: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .sidebar::-webkit-scrollbar {
-            width: 6px;
-        }
-        .sidebar::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-        }
-        .sidebar::-webkit-scrollbar-thumb {
-            background: var(--accent-red);
-            border-radius: 3px;
-        }
+        .sidebar::-webkit-scrollbar { width: 6px; }
+        .sidebar::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.05); }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--accent-red); border-radius: 3px; }
         .sidebar-title {
             font-size: 1.8rem;
             font-weight: 700;
@@ -113,20 +106,9 @@
             max-height: 300px;
             overflow-y: auto;
         }
-        .filter-content.collapsed {
-            display: none;
-        }
-        .filter-content::-webkit-scrollbar {
-            width: 6px;
-        }
-        .filter-content::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-        }
-        .filter-content::-webkit-scrollbar-thumb {
-            background: var(--accent-red);
-            border-radius: 3px;
-        }
+        .filter-content.collapsed { display: none; }
+        .filter-content::-webkit-scrollbar { width: 6px; }
+        .filter-content::-webkit-scrollbar-thumb { background: var(--accent-red); border-radius: 3px; }
         .checkbox-wrapper {
             display: flex;
             align-items: center;
@@ -193,9 +175,7 @@
             background: rgba(255, 255, 255, 0.1);
             color: var(--text-light);
         }
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.15); }
         .filter-actions {
             display: flex;
             gap: 1rem;
@@ -307,17 +287,9 @@
             }
             .sidebar.active { left: 0; }
             .sidebar-toggle { display: flex; }
-            .map-legend {
-                bottom: 1rem;
-                right: 1rem;
-                max-width: calc(100% - 2rem);
-            }
         }
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                left: -100%;
-            }
+            .sidebar { width: 100%; left: -100%; }
             .nav-links { display: none; }
         }
     </style>
@@ -378,9 +350,6 @@
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="filter-content" id="genderFilters"></div>
-                <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.5rem; display: block;">
-                    * Gênero predito utilizando Machine Learning
-                </small>
             </div>
 
             <div class="filter-group">
@@ -463,25 +432,26 @@
 
         function initMap() {
             map = L.map('map').setView([-14.235, -51.925], 4);
-            
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
                 attribution: '© OpenStreetMap © CARTO',
                 maxZoom: 19
             }).addTo(map);
-
             markersLayer = L.layerGroup().addTo(map);
         }
 
         async function loadData() {
             try {
-                const csvUrl = 'https://raw.githubusercontent.com/clarissalimapaulo/OPAB-cebrap/main/data/BAP%20-%20BAP.csv';
-                
-                Papa.parse(csvUrl, {
-                    download: true,
+                const csvPath = './data/BAP - BAP.csv';
+                const response = await fetch(csvPath);
+                if (!response.ok) throw new Error('CSV não encontrado: ' + csvPath);
+                const csvText = await response.text();
+                Papa.parse(csvText, {
                     header: true,
                     skipEmptyLines: true,
                     complete: function(results) {
+                        console.log('CSV carregado:', results.data.length, 'linhas');
                         allData = results.data.filter(row => row.latitude && row.longitude);
+                        console.log('Dados com coordenadas:', allData.length, 'linhas');
                         filteredData = [...allData];
                         initializeFilters();
                         updateMap();
@@ -489,12 +459,13 @@
                         document.getElementById('loading').style.display = 'none';
                     },
                     error: function(error) {
-                        console.error('Error loading CSV:', error);
-                        document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro ao carregar dados. Verifique a conexão.</div>';
+                        console.error('Erro ao processar CSV:', error);
+                        document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro: ' + error.message + '</div>';
                     }
                 });
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Erro:', error);
+                document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro: ' + error.message + '</div>';
             }
         }
 
@@ -510,7 +481,6 @@
         function createFilterCheckboxes(column, containerId, prefix, sort = false) {
             const values = [...new Set(allData.map(row => row[column]).filter(Boolean))];
             if (sort) values.sort();
-            
             const container = document.getElementById(containerId);
             values.forEach(value => {
                 const id = `${prefix}-${value.replace(/[^a-zA-Z0-9]/g, '')}`;
@@ -526,7 +496,6 @@
         function applyFilters() {
             const yearFrom = parseInt(document.getElementById('yearFrom').value);
             const yearTo = parseInt(document.getElementById('yearTo').value);
-            
             const selectedTypes = getCheckedValues('.filter-type');
             const selectedGenders = getCheckedValues('.filter-gender');
             const selectedVictimMacro = getCheckedValues('.filter-victimMacro');
@@ -545,14 +514,8 @@
                 if (selectedWeapons.length > 0 && !selectedWeapons.includes(row.Instrumento_1)) return false;
                 return true;
             });
-
             updateMap();
             updateResultsCount();
-            
-            if (window.innerWidth <= 1024) {
-                document.getElementById('sidebar').classList.remove('active');
-                document.getElementById('sidebarToggle').querySelector('i').className = 'fas fa-filter';
-            }
         }
 
         function getCheckedValues(selector) {
@@ -561,84 +524,40 @@
 
         function updateMap() {
             markersLayer.clearLayers();
-
             const cityData = {};
-            
             filteredData.forEach(row => {
                 const lat = parseFloat(row.latitude);
                 const lng = parseFloat(row.longitude);
                 const city = row.Cidade || 'Desconhecida';
                 const state = row.UF || '';
-                
                 if (!lat || !lng || isNaN(lat) || isNaN(lng)) return;
-
                 const key = `${city}, ${state}`;
-                
                 if (!cityData[key]) {
-                    cityData[key] = {
-                        city: city,
-                        state: state,
-                        lat: lat,
-                        lng: lng,
-                        count: 0,
-                        byType: {},
-                        cases: []
-                    };
+                    cityData[key] = { city, state, lat, lng, count: 0, byType: {} };
                 }
-                
                 cityData[key].count++;
                 const type = row['Tipo_ação_vítima'] || 'Não especificado';
                 cityData[key].byType[type] = (cityData[key].byType[type] || 0) + 1;
-                
-                cityData[key].cases.push({
-                    type: type,
-                    description: row['Descrição'] || 'Sem descrição',
-                    date: `${row.Dia}/${row.Mês}/${row.Ano}`,
-                    victimType: row['Vítima_Tipo_Grupo'] || 'Não especificado'
-                });
             });
 
             Object.values(cityData).forEach(data => {
                 const color = getColor(data.count);
                 const radius = Math.sqrt(data.count) * 3;
-
                 const circle = L.circleMarker([data.lat, data.lng], {
-                    radius: radius,
-                    fillColor: color,
-                    color: '#fff',
-                    weight: 2,
-                    opacity: 1,
-                    fillOpacity: 0.7
+                    radius, fillColor: color, color: '#fff', weight: 2, opacity: 1, fillOpacity: 0.7
                 });
-
-                let popupContent = `
-                    <div style="color: #1a1d35; min-width: 250px; max-width: 350px;">
-                        <h3 style="margin: 0 0 0.8rem 0; color: #d63447; font-size: 1.1rem;">${data.city}, ${data.state}</h3>
-                        <p style="margin: 0 0 0.8rem 0; font-size: 1rem;"><strong style="color: #d63447; font-size: 1.3rem;">${data.count}</strong> casos registrados</p>
-                        <div style="background: #f5f5f5; padding: 0.8rem; border-radius: 8px; margin-bottom: 0.8rem;">
-                            <strong style="display: block; margin-bottom: 0.5rem;">Por tipo:</strong>
-                `;
-
+                let popupContent = `<div style="color: #1a1d35; min-width: 250px;"><h3 style="margin: 0 0 0.8rem 0; color: #d63447;">${data.city}, ${data.state}</h3><p style="margin: 0 0 0.8rem 0;"><strong style="color: #d63447; font-size: 1.3rem;">${data.count}</strong> casos</p><div style="background: #f5f5f5; padding: 0.8rem; border-radius: 8px;">`;
                 Object.entries(data.byType).forEach(([type, count]) => {
-                    popupContent += `<div style="margin: 0.3rem 0;">• ${type}: ${count}</div>`;
+                    popupContent += `<div>• ${type}: ${count}</div>`;
                 });
-
                 popupContent += '</div></div>';
-
-                circle.bindPopup(popupContent, {
-                    maxWidth: 350,
-                    className: 'custom-popup'
-                });
-                
+                circle.bindPopup(popupContent);
                 circle.addTo(markersLayer);
             });
         }
 
         function getColor(count) {
-            return count > 50 ? '#d63447' :
-                   count > 20 ? '#ff6b7a' :
-                   count > 5  ? '#ff9aa2' :
-                                '#ffb3ba';
+            return count > 50 ? '#d63447' : count > 20 ? '#ff6b7a' : count > 5 ? '#ff9aa2' : '#ffb3ba';
         }
 
         function updateResultsCount() {
@@ -656,14 +575,10 @@
 
         document.getElementById('applyFilters').addEventListener('click', applyFilters);
         document.getElementById('resetFilters').addEventListener('click', resetFilters);
-
         document.getElementById('sidebarToggle').addEventListener('click', () => {
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.toggle('active');
-            const icon = document.getElementById('sidebarToggle').querySelector('i');
-            icon.className = sidebar.classList.contains('active') ? 'fas fa-times' : 'fas fa-filter';
         });
-
         document.querySelectorAll('.filter-label').forEach(label => {
             label.addEventListener('click', () => {
                 label.classList.toggle('collapsed');
