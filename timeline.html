@@ -253,10 +253,10 @@
     <nav>
         <a href="index.html" class="logo">OPAB<span>-CEBRAP</span></a>
         <ul class="nav-links">
-            <li><a href="index.html">InÃ­cio</a></li>
+            <li><a href="index.html">Início</a></li>
             <li><a href="map.html">Mapa</a></li>
             <li><a href="timeline.html">Linha do Tempo</a></li>
-            <li><a href="analysis.html">AnÃ¡lises</a></li>
+            <li><a href="analysis.html">Análises</a></li>
         </ul>
     </nav>
 
@@ -264,12 +264,12 @@
         <div class="page-header">
             <h1 class="page-title">Linha do <span>Tempo</span></h1>
             <p class="page-description">
-                Explore a evoluÃ§Ã£o dos assassinatos polÃ­ticos no Brasil organizados por mandatos presidenciais (2003-2023)
+                Explore a evolução dos assassinatos políticos no Brasil organizados por mandatos presidenciais (2003-2023)
             </p>
         </div>
 
         <div class="terms-nav">
-            <button class="term-btn active" data-term="all">Todos os PerÃ­odos</button>
+            <button class="term-btn active" data-term="all">Todos os Períodos</button>
             <button class="term-btn" data-term="lula1">Lula I (2003-2006)</button>
             <button class="term-btn" data-term="lula2">Lula II (2007-2010)</button>
             <button class="term-btn" data-term="dilma1">Dilma I (2011-2014)</button>
@@ -281,7 +281,7 @@
 
         <div class="term-info" id="termInfo">
             <div class="term-info-header">
-                <h2 class="term-info-title">Todos os PerÃ­odos</h2>
+                <h2 class="term-info-title">Todos os Períodos</h2>
                 <span class="term-info-period">2003 - 2023</span>
             </div>
             <div class="term-info-stats">
@@ -291,7 +291,7 @@
                 </div>
                 <div class="term-stat">
                     <span class="term-stat-value" id="statAverage">0</span>
-                    <span class="term-stat-label">MÃ©dia por Ano</span>
+                    <span class="term-stat-label">Média por Ano</span>
                 </div>
                 <div class="term-stat">
                     <span class="term-stat-value" id="statPeak">-</span>
@@ -302,7 +302,7 @@
 
         <div class="chart-container">
             <div class="chart-header">
-                <h3 class="chart-title">EvoluÃ§Ã£o Temporal</h3>
+                <h3 class="chart-title">Evolução Temporal</h3>
                 <div class="chart-controls">
                     <button class="chart-btn active" data-view="yearly">Anual</button>
                     <button class="chart-btn" data-view="monthly">Mensal</button>
@@ -315,7 +315,7 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
             <div class="chart-container">
                 <div class="chart-header">
-                    <h3 class="chart-title">Por Tipo de AÃ§Ã£o</h3>
+                    <h3 class="chart-title">Por Tipo de Ação</h3>
                 </div>
                 <canvas id="typeChart"></canvas>
             </div>
@@ -330,11 +330,11 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
             <div class="chart-container">
                 <div class="chart-header">
-                    <h3 class="chart-title">Por GÃªnero</h3>
+                    <h3 class="chart-title">Por Gênero</h3>
                 </div>
                 <canvas id="genderChart"></canvas>
                 <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem; text-align: center;">
-                    * GÃªnero predito utilizando Machine Learning
+                    * Gênero predito utilizando Machine Learning
                 </p>
             </div>
             <div class="chart-container">
@@ -352,7 +352,7 @@
         let charts = {};
 
         const termRanges = {
-            all: { start: 2003, end: 2023, title: 'Todos os PerÃ­odos', period: '2003 - 2023' },
+            all: { start: 2003, end: 2023, title: 'Todos os Períodos', period: '2003 - 2023' },
             lula1: { start: 2003, end: 2006, title: 'Governo Lula I', period: '2003 - 2006' },
             lula2: { start: 2007, end: 2010, title: 'Governo Lula II', period: '2007 - 2010' },
             dilma1: { start: 2011, end: 2014, title: 'Governo Dilma I', period: '2011 - 2014' },
@@ -364,9 +364,7 @@
 
         async function loadData() {
             try {
-                const csvUrl = 'https://raw.githubusercontent.com/clarissalimapaulo/OPAB-cebrap/main/data/BAP%20-%20BAP.csv';
-                
-                Papa.parse(csvUrl, {
+                Papa.parse('data/BAP - BAP.csv', {
                     download: true,
                     header: true,
                     skipEmptyLines: true,
@@ -379,7 +377,8 @@
                     },
                     error: function(error) {
                         console.error('Error loading CSV:', error);
-                        document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro ao carregar dados.</div>';
+                        alert('Erro ao carregar os dados. Verifique se o arquivo está em data/BAP - BAP.csv');
+                        document.getElementById('loading').style.display = 'none';
                     }
                 });
             } catch (error) {
@@ -520,7 +519,7 @@
                     </div>
                     <div class="term-stat">
                         <span class="term-stat-value">${average}</span>
-                        <span class="term-stat-label">MÃ©dia por Ano</span>
+                        <span class="term-stat-label">Média por Ano</span>
                     </div>
                     <div class="term-stat">
                         <span class="term-stat-value">${peakYear ? peakYear[0] : '-'}</span>
@@ -556,7 +555,7 @@
         function updateTypeChart() {
             const typeCounts = {};
             currentTermData.forEach(row => {
-                const type = row['Tipo_aÃ§Ã£o_vÃ­tima'] || 'NÃ£o especificado';
+                const type = row['Tipo_ação_vítima'] || 'Não especificado';
                 typeCounts[type] = (typeCounts[type] || 0) + 1;
             });
 
@@ -592,7 +591,7 @@
         function updateGenderChart() {
             const genderCounts = {};
             currentTermData.forEach(row => {
-                const gender = row['GÃªnero_predito'] || 'NÃ£o especificado';
+                const gender = row['Gênero_predito'] || 'Não especificado';
                 genderCounts[gender] = (genderCounts[gender] || 0) + 1;
             });
 
@@ -608,7 +607,7 @@
         function updateWeaponChart() {
             const weaponCounts = {};
             currentTermData.forEach(row => {
-                const weapon = row.Instrumento_1 || 'NÃ£o especificado';
+                const weapon = row.Instrumento_1 || 'Não especificado';
                 weaponCounts[weapon] = (weaponCounts[weapon] || 0) + 1;
             });
 
@@ -637,6 +636,7 @@
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.chart-btn[data-view]').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
+                // Implement view change logic here if needed
             });
         });
 
