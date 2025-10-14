@@ -440,35 +440,33 @@
         }
 
         async function loadData() {
-            try {
-                const csvPath = './data/BAP - BAP.csv';
-                const response = await fetch(csvPath);
-                if (!response.ok) throw new Error('CSV não encontrado: ' + csvPath);
-                const csvText = await response.text();
-                Papa.parse(csvText, {
-                    header: true,
-                    skipEmptyLines: true,
-                    complete: function(results) {
-                        console.log('CSV carregado:', results.data.length, 'linhas');
-                        allData = results.data.filter(row => row.latitude && row.longitude);
-                        console.log('Dados com coordenadas:', allData.length, 'linhas');
-                        filteredData = [...allData];
-                        initializeFilters();
-                        updateMap();
-                        updateResultsCount();
-                        document.getElementById('loading').style.display = 'none';
-                    },
-                    error: function(error) {
-                        console.error('Erro ao processar CSV:', error);
-                        document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro: ' + error.message + '</div>';
-                    }
-                });
-            } catch (error) {
-                console.error('Erro:', error);
-                document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro: ' + error.message + '</div>';
+    try {
+        const csvUrl = 'https://raw.githubusercontent.com/clarissalimapaulo/OPAB-cebrap/main/data/BAP%20-%20BAP.csv';
+        
+        Papa.parse(csvUrl, {
+            download: true,
+            header: true,
+            skipEmptyLines: true,
+            complete: function(results) {
+                console.log('CSV carregado:', results.data.length, 'linhas');
+                allData = results.data.filter(row => row.latitude && row.longitude);
+                console.log('Dados com coordenadas:', allData.length, 'linhas');
+                filteredData = [...allData];
+                initializeFilters();
+                updateMap();
+                updateResultsCount();
+                document.getElementById('loading').style.display = 'none';
+            },
+            error: function(error) {
+                console.error('Erro ao carregar CSV:', error);
+                document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro ao carregar dados.</div>';
             }
-        }
-
+        });
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro: ' + error.message + '</div>';
+    }
+}
         function initializeFilters() {
             createFilterCheckboxes('Tipo_ação_vítima', 'typeFilters', 'type');
             createFilterCheckboxes('Gênero_predito', 'genderFilters', 'gender');
