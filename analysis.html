@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AnÃ¡lises - OPAB-CEBRAP</title>
+    <title>Análises - OPAB-CEBRAP</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -12,8 +12,8 @@
         :root {
             --primary-dark: #1a1d35;
             --secondary-dark: #252946;
-            --accent-red: #d63447;
-            --accent-light: #ff6b7a;
+            --accent-green: #99c466;
+            --accent-light: #8ab35b;
             --text-light: #e8eaf6;
             --text-muted: #9fa8c7;
         }
@@ -42,7 +42,7 @@
             text-decoration: none;
             color: var(--text-light);
         }
-        .logo span { color: var(--accent-red); }
+        .logo span { color: var(--accent-green); }
         .nav-links {
             display: flex;
             gap: 2.5rem;
@@ -54,7 +54,7 @@
             font-weight: 500;
             transition: color 0.3s;
         }
-        .nav-links a:hover { color: var(--accent-red); }
+        .nav-links a:hover { color: var(--accent-green); }
         .analysis-container {
             padding: 8rem 5% 4rem;
             max-width: 1800px;
@@ -70,7 +70,7 @@
             margin-bottom: 1rem;
             letter-spacing: -2px;
         }
-        .page-title span { color: var(--accent-red); }
+        .page-title span { color: var(--accent-green); }
         .page-description {
             color: var(--text-muted);
             font-size: 1.2rem;
@@ -95,17 +95,17 @@
         }
         .stat-card:hover {
             transform: translateY(-5px);
-            border-color: var(--accent-red);
+            border-color: var(--accent-green);
         }
         .stat-icon {
             font-size: 3rem;
-            color: var(--accent-red);
+            color: var(--accent-green);
             margin-bottom: 1rem;
         }
         .stat-value {
             font-size: 2.5rem;
             font-weight: 800;
-            color: var(--accent-red);
+            color: var(--accent-green);
             display: block;
             margin-bottom: 0.5rem;
         }
@@ -118,7 +118,7 @@
             font-weight: 800;
             margin: 3rem 0 2rem;
         }
-        .section-title span { color: var(--accent-red); }
+        .section-title span { color: var(--accent-green); }
         .charts-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
@@ -157,7 +157,7 @@
         }
         .loading-spinner {
             border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid var(--accent-red);
+            border-top: 4px solid var(--accent-green);
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -182,12 +182,12 @@
             border-collapse: collapse;
         }
         th {
-            background: rgba(214, 52, 71, 0.2);
+            background: rgba(153, 196, 102, 0.2);
             color: var(--text-light);
             padding: 1rem;
             text-align: left;
             font-weight: 600;
-            border-bottom: 2px solid var(--accent-red);
+            border-bottom: 2px solid var(--accent-green);
         }
         td {
             padding: 1rem;
@@ -220,22 +220,21 @@
     <nav>
         <a href="index.html" class="logo">OPAB<span>-CEBRAP</span></a>
         <ul class="nav-links">
-            <li><a href="index.html">InÃ­cio</a></li>
+            <li><a href="index.html">Início</a></li>
             <li><a href="map.html">Mapa</a></li>
             <li><a href="timeline.html">Linha do Tempo</a></li>
-            <li><a href="analysis.html">AnÃ¡lises</a></li>
+            <li><a href="analysis.html">Análises</a></li>
         </ul>
     </nav>
 
     <div class="analysis-container">
         <div class="page-header">
-            <h1 class="page-title">AnÃ¡lises <span>Detalhadas</span></h1>
+            <h1 class="page-title">Análises <span>Detalhadas</span></h1>
             <p class="page-description">
-                AnÃ¡lise aprofundada dos padrÃµes de violÃªncia polÃ­tica no Brasil (2003-2023)
+                Análise aprofundada dos padrões de violência política no Brasil (2003-2023)
             </p>
         </div>
 
-        <!-- Key Statistics -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon"><i class="fas fa-exclamation-circle"></i></div>
@@ -255,12 +254,11 @@
             <div class="stat-card">
                 <div class="stat-icon"><i class="fas fa-shield-alt"></i></div>
                 <span class="stat-value" id="totalThreats">0</span>
-                <span class="stat-label">AmeaÃ§as</span>
+                <span class="stat-label">Ameaças</span>
             </div>
         </div>
 
-        <!-- Main Charts -->
-        <h2 class="section-title">DistribuiÃ§Ã£o <span>GeogrÃ¡fica</span></h2>
+        <h2 class="section-title">Distribuição <span>Geográfica</span></h2>
         <div class="charts-row">
             <div class="chart-card">
                 <h3 class="chart-card-title">Top 10 Estados</h3>
@@ -272,46 +270,46 @@
             </div>
         </div>
 
-        <h2 class="section-title">Perfil das <span>VÃ­timas</span></h2>
+        <h2 class="section-title">Perfil das <span>Vítimas</span></h2>
         <div class="charts-row">
             <div class="chart-card">
-                <h3 class="chart-card-title">Tipo de VÃ­tima (Macro)</h3>
+                <h3 class="chart-card-title">Tipo de Vítima (Macro)</h3>
                 <canvas id="victimMacroChart"></canvas>
             </div>
             <div class="chart-card">
-                <h3 class="chart-card-title">Tipo de VÃ­tima (Micro)</h3>
+                <h3 class="chart-card-title">Tipo de Vítima (Micro)</h3>
                 <canvas id="victimMicroChart"></canvas>
             </div>
         </div>
 
         <div class="charts-row">
             <div class="chart-card">
-                <h3 class="chart-card-title">DistribuiÃ§Ã£o por GÃªnero</h3>
+                <h3 class="chart-card-title">Distribuição por Gênero</h3>
                 <canvas id="genderChart"></canvas>
-                <p class="chart-note">* GÃªnero predito utilizando Machine Learning</p>
+                <p class="chart-note">* Gênero predito utilizando Machine Learning</p>
             </div>
             <div class="chart-card">
-                <h3 class="chart-card-title">Tipo de AÃ§Ã£o</h3>
+                <h3 class="chart-card-title">Tipo de Ação</h3>
                 <canvas id="actionTypeChart"></canvas>
             </div>
         </div>
 
-        <h2 class="section-title">MÃ©todos e <span>Instrumentos</span></h2>
+        <h2 class="section-title">Métodos e <span>Instrumentos</span></h2>
         <div class="charts-row">
             <div class="chart-card">
                 <h3 class="chart-card-title">Principais Instrumentos Utilizados</h3>
                 <canvas id="weaponChart"></canvas>
             </div>
             <div class="chart-card">
-                <h3 class="chart-card-title">EvoluÃ§Ã£o dos Instrumentos ao Longo do Tempo</h3>
+                <h3 class="chart-card-title">Evolução dos Instrumentos ao Longo do Tempo</h3>
                 <canvas id="weaponTimelineChart"></canvas>
             </div>
         </div>
 
-        <h2 class="section-title">AnÃ¡lise <span>Temporal</span></h2>
+        <h2 class="section-title">Análise <span>Temporal</span></h2>
         <div class="charts-row" style="grid-template-columns: 1fr;">
             <div class="chart-card">
-                <h3 class="chart-card-title">DistribuiÃ§Ã£o por MÃªs do Ano</h3>
+                <h3 class="chart-card-title">Distribuição por Mês do Ano</h3>
                 <canvas id="monthChart"></canvas>
             </div>
         </div>
@@ -326,7 +324,7 @@
                         <th>Total</th>
                         <th>Assassinatos</th>
                         <th>Tentativas</th>
-                        <th>AmeaÃ§as</th>
+                        <th>Ameaças</th>
                         <th>% do Total</th>
                     </tr>
                 </thead>
@@ -357,7 +355,7 @@
                     },
                     error: function(error) {
                         console.error('Error loading CSV:', error);
-                        document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro ao carregar dados.</div>';
+                        document.getElementById('loading').innerHTML = '<div style="color: #99c466;">Erro ao carregar dados.</div>';
                     }
                 });
             } catch (error) {
@@ -367,9 +365,9 @@
 
         function updateStatistics() {
             const total = allData.length;
-            const assassinations = allData.filter(r => r['Tipo_aÃ§Ã£o_vÃ­tima']?.toLowerCase() === 'assassinato').length;
-            const attempts = allData.filter(r => r['Tipo_aÃ§Ã£o_vÃ­tima']?.toLowerCase() === 'tentativa').length;
-            const threats = allData.filter(r => r['Tipo_aÃ§Ã£o_vÃ­tima']?.toLowerCase() === 'ameaÃ§a').length;
+            const assassinations = allData.filter(r => r['Tipo_ação_vítima']?.toLowerCase() === 'assassinato').length;
+            const attempts = allData.filter(r => r['Tipo_ação_vítima']?.toLowerCase() === 'tentativa').length;
+            const threats = allData.filter(r => r['Tipo_ação_vítima']?.toLowerCase() === 'ameaça').length;
 
             document.getElementById('totalCases').textContent = total;
             document.getElementById('totalAssassinations').textContent = assassinations;
@@ -388,7 +386,7 @@
                         backgroundColor: 'rgba(37, 41, 70, 0.95)',
                         titleColor: '#e8eaf6',
                         bodyColor: '#e8eaf6',
-                        borderColor: '#d63447',
+                        borderColor: '#99c466',
                         borderWidth: 1,
                         padding: 12
                     }
@@ -423,7 +421,7 @@
                         backgroundColor: 'rgba(37, 41, 70, 0.95)',
                         titleColor: '#e8eaf6',
                         bodyColor: '#e8eaf6',
-                        borderColor: '#d63447',
+                        borderColor: '#99c466',
                         borderWidth: 1,
                         padding: 12
                     }
@@ -514,7 +512,7 @@
         function countByField(field) {
             const counts = {};
             allData.forEach(row => {
-                const value = row[field] || 'NÃ£o especificado';
+                const value = row[field] || 'Não especificado';
                 counts[value] = (counts[value] || 0) + 1;
             });
             return counts;
@@ -527,7 +525,7 @@
             charts.state.data.labels = sorted.map(([state]) => state);
             charts.state.data.datasets = [{
                 data: sorted.map(([, count]) => count),
-                backgroundColor: '#d63447',
+                backgroundColor: '#99c466',
                 borderWidth: 0
             }];
             charts.state.update();
@@ -540,56 +538,56 @@
             charts.city.data.labels = sorted.map(([city]) => city);
             charts.city.data.datasets = [{
                 data: sorted.map(([, count]) => count),
-                backgroundColor: '#d63447',
+                backgroundColor: '#99c466',
                 borderWidth: 0
             }];
             charts.city.update();
         }
 
         function updateVictimMacroChart() {
-            const counts = countByField('VÃ­tima_Tipo_Macro-Grupo');
+            const counts = countByField('Vítima_Tipo_Macro-Grupo');
             
             charts.victimMacro.data.labels = Object.keys(counts);
             charts.victimMacro.data.datasets = [{
                 data: Object.values(counts),
-                backgroundColor: ['#d63447', '#ff6b7a', '#ff9aa2', '#ffb3ba', '#ffd4d8'],
+                backgroundColor: ['#99c466', '#8ab35b', '#b3d98f', '#cce6b3', '#dcedc8'],
                 borderWidth: 0
             }];
             charts.victimMacro.update();
         }
 
         function updateVictimMicroChart() {
-            const counts = countByField('VÃ­tima_Tipo_Grupo');
+            const counts = countByField('Vítima_Tipo_Grupo');
             const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 10);
             
             charts.victimMicro.data.labels = sorted.map(([type]) => type);
             charts.victimMicro.data.datasets = [{
                 data: sorted.map(([, count]) => count),
-                backgroundColor: '#d63447',
+                backgroundColor: '#99c466',
                 borderWidth: 0
             }];
             charts.victimMicro.update();
         }
 
         function updateGenderChart() {
-            const counts = countByField('GÃªnero_predito');
+            const counts = countByField('Gênero_predito');
             
             charts.gender.data.labels = Object.keys(counts);
             charts.gender.data.datasets = [{
                 data: Object.values(counts),
-                backgroundColor: ['#d63447', '#ff6b7a', '#ff9aa2'],
+                backgroundColor: ['#99c466', '#8ab35b', '#b3d98f'],
                 borderWidth: 0
             }];
             charts.gender.update();
         }
 
         function updateActionTypeChart() {
-            const counts = countByField('Tipo_aÃ§Ã£o_vÃ­tima');
+            const counts = countByField('Tipo_ação_vítima');
             
             charts.actionType.data.labels = Object.keys(counts);
             charts.actionType.data.datasets = [{
                 data: Object.values(counts),
-                backgroundColor: ['#d63447', '#ff6b7a', '#ff9aa2'],
+                backgroundColor: ['#99c466', '#8ab35b', '#b3d98f'],
                 borderWidth: 0
             }];
             charts.actionType.update();
@@ -602,7 +600,7 @@
             charts.weapon.data.labels = sorted.map(([weapon]) => weapon);
             charts.weapon.data.datasets = [{
                 data: sorted.map(([, count]) => count),
-                backgroundColor: '#d63447',
+                backgroundColor: '#99c466',
                 borderWidth: 0
             }];
             charts.weapon.update();
@@ -617,7 +615,7 @@
 
             allData.forEach(row => {
                 const year = row.Ano;
-                const weapon = row.Instrumento_1 || 'NÃ£o especificado';
+                const weapon = row.Instrumento_1 || 'Não especificado';
                 
                 if (!topWeapons.includes(weapon)) return;
                 
@@ -626,7 +624,7 @@
             });
 
             const years = Object.keys(weaponsByYear).sort();
-            const colors = ['#d63447', '#ff6b7a', '#ff9aa2', '#ffb3ba', '#ffd4d8'];
+            const colors = ['#99c466', '#8ab35b', '#b3d98f', '#cce6b3', '#dcedc8'];
 
             charts.weaponTimeline.data.labels = years;
             charts.weaponTimeline.data.datasets = topWeapons.map((weapon, idx) => ({
@@ -646,7 +644,7 @@
             const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
             
             allData.forEach(row => {
-                const month = parseInt(row['MÃªs']);
+                const month = parseInt(row['Mês']);
                 if (month >= 1 && month <= 12) {
                     monthCounts[month] = (monthCounts[month] || 0) + 1;
                 }
@@ -660,7 +658,7 @@
             charts.month.data.labels = monthNames;
             charts.month.data.datasets = [{
                 data: data,
-                backgroundColor: '#d63447',
+                backgroundColor: '#99c466',
                 borderWidth: 0
             }];
             charts.month.update();
@@ -671,21 +669,21 @@
             
             allData.forEach(row => {
                 const state = row.UF || 'Desconhecido';
-                const type = row['Tipo_aÃ§Ã£o_vÃ­tima']?.toLowerCase();
+                const type = row['Tipo_ação_vítima']?.toLowerCase();
                 
                 if (!stateData[state]) {
                     stateData[state] = {
                         total: 0,
                         assassinato: 0,
                         tentativa: 0,
-                        ameaÃ§a: 0
+                        ameaça: 0
                     };
                 }
                 
                 stateData[state].total++;
                 if (type === 'assassinato') stateData[state].assassinato++;
                 else if (type === 'tentativa') stateData[state].tentativa++;
-                else if (type === 'ameaÃ§a') stateData[state].ameaÃ§a++;
+                else if (type === 'ameaça') stateData[state].ameaça++;
             });
 
             const sorted = Object.entries(stateData).sort((a, b) => b[1].total - a[1].total);
@@ -701,7 +699,7 @@
                         <td>${data.total}</td>
                         <td>${data.assassinato}</td>
                         <td>${data.tentativa}</td>
-                        <td>${data.ameaÃ§a}</td>
+                        <td>${data.ameaça}</td>
                         <td>${percentage}%</td>
                     </tr>
                 `;
