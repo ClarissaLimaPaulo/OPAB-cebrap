@@ -303,10 +303,10 @@
     <nav>
         <a href="index.html" class="logo">OPAB<span>-CEBRAP</span></a>
         <ul class="nav-links">
-            <li><a href="index.html">InÃ­cio</a></li>
+            <li><a href="index.html">Início</a></li>
             <li><a href="map.html">Mapa</a></li>
             <li><a href="timeline.html">Linha do Tempo</a></li>
-            <li><a href="analysis.html">AnÃ¡lises</a></li>
+            <li><a href="analysis.html">Análises</a></li>
         </ul>
     </nav>
 
@@ -317,11 +317,11 @@
     <div class="map-container">
         <aside class="sidebar" id="sidebar">
             <h2 class="sidebar-title">Mapa <span>Interativo</span></h2>
-            <p style="color: var(--text-muted); margin-bottom: 2rem;">Filtre os dados para visualizaÃ§Ã£o personalizada</p>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Filtre os dados para visualização personalizada</p>
 
             <div class="filter-group">
                 <div class="filter-label">
-                    <span><i class="fas fa-calendar-alt"></i> PerÃ­odo</span>
+                    <span><i class="fas fa-calendar-alt"></i> Período</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="filter-content">
@@ -330,7 +330,7 @@
                         <input type="number" id="yearFrom" value="2003" min="2003" max="2023">
                     </div>
                     <div class="date-input-group">
-                        <label>AtÃ©:</label>
+                        <label>Até:</label>
                         <input type="number" id="yearTo" value="2023" min="2003" max="2023">
                     </div>
                 </div>
@@ -338,7 +338,7 @@
 
             <div class="filter-group">
                 <div class="filter-label">
-                    <span><i class="fas fa-list"></i> Tipo de AÃ§Ã£o</span>
+                    <span><i class="fas fa-list"></i> Tipo de Ação</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="filter-content" id="typeFilters"></div>
@@ -346,15 +346,18 @@
 
             <div class="filter-group">
                 <div class="filter-label">
-                    <span><i class="fas fa-venus-mars"></i> GÃªnero</span>
+                    <span><i class="fas fa-venus-mars"></i> Gênero</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="filter-content" id="genderFilters"></div>
+                <small style="color: var(--text-muted); font-size: 0.8rem; margin-top: 0.5rem; display: block;">
+                    * Gênero predito utilizando Machine Learning
+                </small>
             </div>
 
             <div class="filter-group">
                 <div class="filter-label">
-                    <span><i class="fas fa-users"></i> Tipo de VÃ­tima (Macro)</span>
+                    <span><i class="fas fa-users"></i> Tipo de Vítima (Macro)</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="filter-content" id="victimMacroFilters"></div>
@@ -362,7 +365,7 @@
 
             <div class="filter-group">
                 <div class="filter-label">
-                    <span><i class="fas fa-user-tag"></i> Tipo de VÃ­tima (Micro)</span>
+                    <span><i class="fas fa-user-tag"></i> Tipo de Vítima (Micro)</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
                 <div class="filter-content" id="victimMicroFilters"></div>
@@ -402,14 +405,14 @@
         <div class="map-area">
             <div id="map"></div>
             <div class="map-legend">
-                <div class="legend-title">ConcentraÃ§Ã£o</div>
+                <div class="legend-title">Concentração</div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #d63447;"></div>
                     <span class="legend-label">Alta (50+)</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #ff6b7a;"></div>
-                    <span class="legend-label">MÃ©dia (20-49)</span>
+                    <span class="legend-label">Média (20-49)</span>
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #ff9aa2;"></div>
@@ -417,7 +420,7 @@
                 </div>
                 <div class="legend-item">
                     <div class="legend-color" style="background: #ffb3ba;"></div>
-                    <span class="legend-label">MÃ­nima (1-4)</span>
+                    <span class="legend-label">Mínima (1-4)</span>
                 </div>
             </div>
         </div>
@@ -433,45 +436,46 @@
         function initMap() {
             map = L.map('map').setView([-14.235, -51.925], 4);
             L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                attribution: 'Â© OpenStreetMap Â© CARTO',
+                attribution: '© OpenStreetMap © CARTO',
                 maxZoom: 19
             }).addTo(map);
             markersLayer = L.layerGroup().addTo(map);
         }
 
         async function loadData() {
-    try {
-        const csvUrl = 'https://raw.githubusercontent.com/clarissalimapaulo/OPAB-cebrap/main/data/BAP%20-%20BAP.csv';
-        
-        Papa.parse(csvUrl, {
-            download: true,
-            header: true,
-            skipEmptyLines: true,
-            complete: function(results) {
-                console.log('CSV carregado:', results.data.length, 'linhas');
-                allData = results.data.filter(row => row.latitude && row.longitude);
-                console.log('Dados com coordenadas:', allData.length, 'linhas');
-                filteredData = [...allData];
-                initializeFilters();
-                updateMap();
-                updateResultsCount();
-                document.getElementById('loading').style.display = 'none';
-            },
-            error: function(error) {
-                console.error('Erro ao carregar CSV:', error);
-                document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro ao carregar dados.</div>';
+            try {
+                const csvUrl = 'https://raw.githubusercontent.com/clarissalimapaulo/OPAB-cebrap/main/data/BAP%20-%20BAP.csv';
+                
+                Papa.parse(csvUrl, {
+                    download: true,
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: function(results) {
+                        console.log('CSV carregado:', results.data.length, 'linhas');
+                        allData = results.data.filter(row => row.latitude && row.longitude);
+                        console.log('Dados com coordenadas:', allData.length, 'linhas');
+                        filteredData = [...allData];
+                        initializeFilters();
+                        updateMap();
+                        updateResultsCount();
+                        document.getElementById('loading').style.display = 'none';
+                    },
+                    error: function(error) {
+                        console.error('Erro ao carregar CSV:', error);
+                        document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro ao carregar dados.</div>';
+                    }
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro: ' + error.message + '</div>';
             }
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro: ' + error.message + '</div>';
-    }
-}
+        }
+
         function initializeFilters() {
-            createFilterCheckboxes('Tipo_aÃ§Ã£o_vÃ­tima', 'typeFilters', 'type');
-            createFilterCheckboxes('GÃªnero_predito', 'genderFilters', 'gender');
-            createFilterCheckboxes('VÃ­tima_Tipo_Macro-Grupo', 'victimMacroFilters', 'victimMacro');
-            createFilterCheckboxes('VÃ­tima_Tipo_Grupo', 'victimMicroFilters', 'victimMicro');
+            createFilterCheckboxes('Tipo_ação_vítima', 'typeFilters', 'type');
+            createFilterCheckboxes('Gênero_predito', 'genderFilters', 'gender');
+            createFilterCheckboxes('Vítima_Tipo_Macro-Grupo', 'victimMacroFilters', 'victimMacro');
+            createFilterCheckboxes('Vítima_Tipo_Grupo', 'victimMicroFilters', 'victimMicro');
             createFilterCheckboxes('UF', 'stateFilters', 'state', true);
             createFilterCheckboxes('Instrumento_1', 'weaponFilters', 'weapon');
         }
@@ -504,10 +508,10 @@
             filteredData = allData.filter(row => {
                 const year = parseInt(row.Ano);
                 if (year < yearFrom || year > yearTo) return false;
-                if (selectedTypes.length > 0 && !selectedTypes.includes(row['Tipo_aÃ§Ã£o_vÃ­tima'])) return false;
-                if (selectedGenders.length > 0 && !selectedGenders.includes(row['GÃªnero_predito'])) return false;
-                if (selectedVictimMacro.length > 0 && !selectedVictimMacro.includes(row['VÃ­tima_Tipo_Macro-Grupo'])) return false;
-                if (selectedVictimMicro.length > 0 && !selectedVictimMicro.includes(row['VÃ­tima_Tipo_Grupo'])) return false;
+                if (selectedTypes.length > 0 && !selectedTypes.includes(row['Tipo_ação_vítima'])) return false;
+                if (selectedGenders.length > 0 && !selectedGenders.includes(row['Gênero_predito'])) return false;
+                if (selectedVictimMacro.length > 0 && !selectedVictimMacro.includes(row['Vítima_Tipo_Macro-Grupo'])) return false;
+                if (selectedVictimMicro.length > 0 && !selectedVictimMicro.includes(row['Vítima_Tipo_Grupo'])) return false;
                 if (selectedStates.length > 0 && !selectedStates.includes(row.UF)) return false;
                 if (selectedWeapons.length > 0 && !selectedWeapons.includes(row.Instrumento_1)) return false;
                 return true;
@@ -534,7 +538,7 @@
                     cityData[key] = { city, state, lat, lng, count: 0, byType: {} };
                 }
                 cityData[key].count++;
-                const type = row['Tipo_aÃ§Ã£o_vÃ­tima'] || 'NÃ£o especificado';
+                const type = row['Tipo_ação_vítima'] || 'Não especificado';
                 cityData[key].byType[type] = (cityData[key].byType[type] || 0) + 1;
             });
 
@@ -546,7 +550,7 @@
                 });
                 let popupContent = `<div style="color: #1a1d35; min-width: 250px;"><h3 style="margin: 0 0 0.8rem 0; color: #d63447;">${data.city}, ${data.state}</h3><p style="margin: 0 0 0.8rem 0;"><strong style="color: #d63447; font-size: 1.3rem;">${data.count}</strong> casos</p><div style="background: #f5f5f5; padding: 0.8rem; border-radius: 8px;">`;
                 Object.entries(data.byType).forEach(([type, count]) => {
-                    popupContent += `<div>â€¢ ${type}: ${count}</div>`;
+                    popupContent += `<div>• ${type}: ${count}</div>`;
                 });
                 popupContent += '</div></div>';
                 circle.bindPopup(popupContent);
