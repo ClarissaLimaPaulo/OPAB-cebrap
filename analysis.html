@@ -339,7 +339,7 @@
 
         async function loadData() {
             try {
-                const csvUrl = 'https://raw.githubusercontent.com/clarissalimapaulo/OPAB-cebrap/main/data/BAP%20-%20BAP.csv';
+                const csvUrl = 'https://raw.githubusercontent.com/ClarissaLimaPaulo/OPAB-cebrap/main/data/BAP%20-%20BAP.csv';
                 
                 Papa.parse(csvUrl, {
                     download: true,
@@ -355,7 +355,7 @@
                     },
                     error: function(error) {
                         console.error('Error loading CSV:', error);
-                        document.getElementById('loading').innerHTML = '<div style="color: #99c466;">Erro ao carregar dados.</div>';
+                        document.getElementById('loading').innerHTML = '<div style="color: #ff6b7a;">Erro ao carregar dados. Tente recarregar a página.</div>';
                     }
                 });
             } catch (error) {
