@@ -12,8 +12,8 @@
         :root {
             --primary-dark: #1a1d35;
             --secondary-dark: #252946;
-            --accent-red: #d63447;
-            --accent-light: #ff6b7a;
+            --accent-green: #99c466;
+            --accent-light: #8ab35b;
             --text-light: #e8eaf6;
             --text-muted: #9fa8c7;
         }
@@ -43,7 +43,7 @@
             text-decoration: none;
             color: var(--text-light);
         }
-        .logo span { color: var(--accent-red); }
+        .logo span { color: var(--accent-green); }
         .nav-links {
             display: flex;
             gap: 2.5rem;
@@ -55,7 +55,7 @@
             font-weight: 500;
             transition: color 0.3s;
         }
-        .nav-links a:hover { color: var(--accent-red); }
+        .nav-links a:hover { color: var(--accent-green); }
         .timeline-container {
             padding: 8rem 5% 4rem;
             max-width: 1600px;
@@ -71,7 +71,7 @@
             margin-bottom: 1rem;
             letter-spacing: -2px;
         }
-        .page-title span { color: var(--accent-red); }
+        .page-title span { color: var(--accent-green); }
         .page-description {
             color: var(--text-muted);
             font-size: 1.2rem;
@@ -92,7 +92,7 @@
             border-radius: 3px;
         }
         .terms-nav::-webkit-scrollbar-thumb {
-            background: var(--accent-red);
+            background: var(--accent-green);
             border-radius: 3px;
         }
         .term-btn {
@@ -108,12 +108,12 @@
             font-weight: 600;
         }
         .term-btn:hover {
-            border-color: var(--accent-red);
+            border-color: var(--accent-green);
             transform: translateY(-3px);
         }
         .term-btn.active {
-            background: var(--accent-red);
-            border-color: var(--accent-red);
+            background: var(--accent-green);
+            border-color: var(--accent-green);
         }
         .chart-container {
             background: rgba(37, 41, 70, 0.5);
@@ -154,7 +154,7 @@
             background: rgba(255, 255, 255, 0.15);
         }
         .chart-btn.active {
-            background: var(--accent-red);
+            background: var(--accent-green);
         }
         .term-info {
             background: rgba(37, 41, 70, 0.5);
@@ -176,7 +176,7 @@
             font-weight: 800;
         }
         .term-info-period {
-            background: var(--accent-red);
+            background: var(--accent-green);
             color: white;
             padding: 0.5rem 1.5rem;
             border-radius: 20px;
@@ -193,7 +193,7 @@
         .term-stat-value {
             font-size: 3rem;
             font-weight: 800;
-            color: var(--accent-red);
+            color: var(--accent-green);
             display: block;
         }
         .term-stat-label {
@@ -215,7 +215,7 @@
         }
         .loading-spinner {
             border: 4px solid rgba(255, 255, 255, 0.1);
-            border-top: 4px solid var(--accent-red);
+            border-top: 4px solid var(--accent-green);
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -364,7 +364,9 @@
 
         async function loadData() {
             try {
-                Papa.parse('data/BAP - BAP.csv', {
+                const csvUrl = 'https://raw.githubusercontent.com/clarissalimapaulo/OPAB-cebrap/main/data/BAP%20-%20BAP.csv';
+                
+                Papa.parse(csvUrl, {
                     download: true,
                     header: true,
                     skipEmptyLines: true,
@@ -377,8 +379,7 @@
                     },
                     error: function(error) {
                         console.error('Error loading CSV:', error);
-                        alert('Erro ao carregar os dados. Verifique se o arquivo está em data/BAP - BAP.csv');
-                        document.getElementById('loading').style.display = 'none';
+                        document.getElementById('loading').innerHTML = '<div style="color: #99c466;">Erro ao carregar dados.</div>';
                     }
                 });
             } catch (error) {
@@ -396,7 +397,7 @@
                         backgroundColor: 'rgba(37, 41, 70, 0.95)',
                         titleColor: '#e8eaf6',
                         bodyColor: '#e8eaf6',
-                        borderColor: '#d63447',
+                        borderColor: '#99c466',
                         borderWidth: 1,
                         padding: 12
                     }
@@ -437,7 +438,7 @@
                         backgroundColor: 'rgba(37, 41, 70, 0.95)',
                         titleColor: '#e8eaf6',
                         bodyColor: '#e8eaf6',
-                        borderColor: '#d63447',
+                        borderColor: '#99c466',
                         borderWidth: 1,
                         padding: 12
                     }
@@ -543,8 +544,8 @@
             charts.timeline.data.datasets = [{
                 label: 'Casos',
                 data: counts,
-                backgroundColor: 'rgba(214, 52, 71, 0.2)',
-                borderColor: '#d63447',
+                backgroundColor: 'rgba(153, 196, 102, 0.2)',
+                borderColor: '#99c466',
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4
@@ -562,7 +563,7 @@
             charts.type.data.labels = Object.keys(typeCounts);
             charts.type.data.datasets = [{
                 data: Object.values(typeCounts),
-                backgroundColor: ['#d63447', '#ff6b7a', '#ff9aa2', '#ffb3ba'],
+                backgroundColor: ['#99c466', '#8ab35b', '#b3d98f', '#cce6b3'],
                 borderWidth: 0
             }];
             charts.type.update();
@@ -582,7 +583,7 @@
             charts.state.data.labels = sorted.map(([state]) => state);
             charts.state.data.datasets = [{
                 data: sorted.map(([, count]) => count),
-                backgroundColor: '#d63447',
+                backgroundColor: '#99c466',
                 borderWidth: 0
             }];
             charts.state.update();
@@ -598,7 +599,7 @@
             charts.gender.data.labels = Object.keys(genderCounts);
             charts.gender.data.datasets = [{
                 data: Object.values(genderCounts),
-                backgroundColor: ['#d63447', '#ff6b7a', '#ff9aa2', '#ffb3ba'],
+                backgroundColor: ['#99c466', '#8ab35b', '#b3d98f', '#cce6b3'],
                 borderWidth: 0
             }];
             charts.gender.update();
@@ -618,7 +619,7 @@
             charts.weapon.data.labels = sorted.map(([weapon]) => weapon);
             charts.weapon.data.datasets = [{
                 data: sorted.map(([, count]) => count),
-                backgroundColor: '#d63447',
+                backgroundColor: '#99c466',
                 borderWidth: 0
             }];
             charts.weapon.update();
@@ -636,7 +637,6 @@
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.chart-btn[data-view]').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                // Implement view change logic here if needed
             });
         });
 
