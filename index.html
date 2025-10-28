@@ -29,7 +29,6 @@
             overflow-x: hidden;
         }
 
-        /* Navigation */
         nav {
             position: fixed;
             top: 0;
@@ -48,6 +47,8 @@
             font-size: 1.5rem;
             font-weight: 700;
             letter-spacing: -0.5px;
+            text-decoration: none;
+            color: var(--text-light);
         }
 
         .logo span {
@@ -79,7 +80,6 @@
             color: var(--text-light);
         }
 
-        /* Hero Section */
         .hero {
             min-height: 100vh;
             display: flex;
@@ -96,7 +96,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><circle cx="200" cy="200" r="100" fill="rgba(214,52,71,0.1)"/><circle cx="800" cy="400" r="150" fill="rgba(214,52,71,0.05)"/><circle cx="400" cy="600" r="80" fill="rgba(214,52,71,0.08)"/><circle cx="1000" cy="200" r="120" fill="rgba(214,52,71,0.06)"/></svg>');
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><circle cx="200" cy="200" r="100" fill="rgba(153,196,102,0.1)"/><circle cx="800" cy="400" r="150" fill="rgba(153,196,102,0.05)"/><circle cx="400" cy="600" r="80" fill="rgba(153,196,102,0.08)"/><circle cx="1000" cy="200" r="120" fill="rgba(153,196,102,0.06)"/></svg>');
             opacity: 0.3;
             z-index: 0;
         }
@@ -148,15 +148,14 @@
             font-weight: 600;
             font-size: 1.1rem;
             transition: all 0.3s;
-            box-shadow: 0 8px 25px rgba(214, 52, 71, 0.3);
+            box-shadow: 0 8px 25px rgba(153, 196, 102, 0.3);
         }
 
         .cta-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(214, 52, 71, 0.4);
+            box-shadow: 0 12px 35px rgba(153, 196, 102, 0.4);
         }
 
-        /* Statistics Bar */
         .stats-bar {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -183,7 +182,6 @@
             margin-top: 0.5rem;
         }
 
-        /* Section Styles */
         section {
             padding: 6rem 5%;
             max-width: 1400px;
@@ -214,7 +212,6 @@
             line-height: 1.8;
         }
 
-        /* Features Grid */
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -272,7 +269,6 @@
             line-height: 1.7;
         }
 
-        /* Team Section */
         .team-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -306,7 +302,6 @@
             font-size: 0.95rem;
         }
 
-        /* Data Visualization Preview */
         .viz-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -341,7 +336,6 @@
             font-size: 1.2rem;
         }
 
-        /* Footer */
         footer {
             background: var(--primary-dark);
             padding: 3rem 5%;
@@ -387,7 +381,6 @@
             color: var(--accent-green);
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .menu-toggle {
                 display: block;
@@ -427,7 +420,6 @@
             }
         }
 
-        /* Scroll Animation */
         .fade-in {
             opacity: 0;
             transform: translateY(30px);
@@ -441,14 +433,13 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
     <nav>
-        <div class="logo">OPAB<span>-CEBRAP</span></div>
+        <a href="index.html" class="logo">OPAB<span>-CEBRAP</span></a>
         <ul class="nav-links" id="navLinks">
-            <li><a href="#home">Início</a></li>
+            <li><a href="index.html">Início</a></li>
             <li><a href="#about">Sobre</a></li>
-            <li><a href="#map">Mapa</a></li>
-            <li><a href="#analysis">Análises</a></li>
+            <li><a href="map.html">Mapa</a></li>
+            <li><a href="analysis.html">Análises</a></li>
             <li><a href="#team">Equipe</a></li>
         </ul>
         <div class="menu-toggle" id="menuToggle">
@@ -456,7 +447,6 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content">
             <h1>
@@ -468,14 +458,13 @@
             <p class="hero-description">
                 Levantamento e análise sistemática de letalidade política no Brasil, observando relações entre violência política e hierarquia social, além de padrões recorrentes que se cristalizam em estilos de assassinato político.
             </p>
-            <a href="#map" class="cta-button">
+            <a href="map.html" class="cta-button">
                 Explorar Dados
                 <i class="fas fa-arrow-right"></i>
             </a>
         </div>
     </section>
 
-    <!-- Statistics Bar -->
     <div class="stats-bar">
         <div class="stat-item">
             <span class="stat-number">1202+</span>
@@ -495,7 +484,6 @@
         </div>
     </div>
 
-    <!-- About Section -->
     <section id="about">
         <div class="section-header fade-in">
             <h2 class="section-title">Sobre o <span>Projeto</span></h2>
@@ -531,7 +519,7 @@
                 </div>
                 <h3 class="feature-title">Análise de Dados</h3>
                 <p class="feature-description">
-                    Gráficos e estatistícas detalhadas sobre distribuição por localização, afiliação polí­tica, método, objeto de disputa e perfil das vítimas.
+                    Gráficos e estatísticas detalhadas sobre distribuição por localização, afiliação política, método, objeto de disputa e perfil das vítimas.
                 </p>
             </div>
 
@@ -541,7 +529,7 @@
                 </div>
                 <h3 class="feature-title">Perfil de Vítimas</h3>
                 <p class="feature-description">
-                    Descrições detalhadas de cada caso baseadas em informações de notícias jornalí­sticas.
+                    Descrições detalhadas de cada caso baseadas em informações de notícias jornalísticas.
                 </p>
             </div>
 
@@ -557,7 +545,6 @@
         </div>
     </section>
 
-    <!-- Data Visualization Preview -->
     <section id="analysis">
         <div class="section-header fade-in">
             <h2 class="section-title">Análises <span>Visuais</span></h2>
@@ -582,7 +569,7 @@
             </div>
 
             <div class="viz-card fade-in">
-                <h3 class="viz-title">Perfil das Ví­timas</h3>
+                <h3 class="viz-title">Perfil das Vítimas</h3>
                 <div class="viz-placeholder">
                     <i class="fas fa-users" style="font-size: 4rem; opacity: 0.3;"></i>
                 </div>
@@ -597,61 +584,58 @@
         </div>
     </section>
 
-    <!-- Team Section -->
     <section id="team">
         <div class="section-header fade-in">
             <h2 class="section-title">Nossa <span>Equipe</span></h2>
             <p class="section-description">
-                Pesquisadores dedicados ao estudo da violência polí­tica no Brasil contemporâneo.
+                Pesquisadores dedicados ao estudo da violência política no Brasil contemporâneo.
             </p>
         </div>
 
         <div class="team-grid">
-    <div class="team-member fade-in">
-        <div class="team-member-name">Angela Alonso</div>
-        <div class="team-member-role">Coordenadora (USP/Cebrap)</div>
-    </div>
-    <div class="team-member fade-in">
-        <div class="team-member-name">Viviane Brito</div>
-        <div class="team-member-role">Fieldwork Coordinator</div>
-    </div>
-    <div class="team-member fade-in">
-        <div class="team-member-name">Patricia Jimenez Rezende</div>
-        <div class="team-member-role">Pesquisadora Doutora</div>
-    </div>
-    <div class="team-member fade-in">
-        <div class="team-member-name">Rafaela Pannain</div>
-        <div class="team-member-role">Pesquisadora Doutora</div>
-    </div>
-    <div class="team-member fade-in">
-        <div class="team-member-name">Guilherme Olí­mpio Fagundes</div>
-        <div class="team-member-role">Pesquisador Mestrando</div>
-    </div>
-    <div class="team-member fade-in">
-        <div class="team-member-name">Samaérika Sousa</div>
-        <div class="team-member-role">Pesquisadora Bacharel</div>
-    </div>
-    <div class="team-member fade-in">
-        <div class="team-member-name">Paulo Castro</div>
-        <div class="team-member-role">Pesquisador Graduando</div>
-    </div>
-    <div class="team-member fade-in">
-        <div class="team-member-name">Clarissa Lima</div>
-        <div class="team-member-role">Pesquisadora Graduanda</div>
-    </div>
-    <div class="team-member fade-in">
-        <div class="team-member-name">Daniel Ferreira</div>
-        <div class="team-member-role">Pesquisador Graduando</div>
-    </div>
-    <div class="team-member fade-in">
-        <div class="team-member-name">José Alexandre Oliveira</div>
-        <div class="team-member-role">Pesquisador Graduando</div>
-    </div>
-</div>
-            
+            <div class="team-member fade-in">
+                <div class="team-member-name">Angela Alonso</div>
+                <div class="team-member-role">Coordenadora (USP/Cebrap)</div>
+            </div>
+            <div class="team-member fade-in">
+                <div class="team-member-name">Viviane Brito</div>
+                <div class="team-member-role">Fieldwork Coordinator</div>
+            </div>
+            <div class="team-member fade-in">
+                <div class="team-member-name">Patricia Jimenez Rezende</div>
+                <div class="team-member-role">Pesquisadora Doutora</div>
+            </div>
+            <div class="team-member fade-in">
+                <div class="team-member-name">Rafaela Pannain</div>
+                <div class="team-member-role">Pesquisadora Doutora</div>
+            </div>
+            <div class="team-member fade-in">
+                <div class="team-member-name">Guilherme Olímpio Fagundes</div>
+                <div class="team-member-role">Pesquisador Mestrando</div>
+            </div>
+            <div class="team-member fade-in">
+                <div class="team-member-name">Samaérika Sousa</div>
+                <div class="team-member-role">Pesquisadora Bacharel</div>
+            </div>
+            <div class="team-member fade-in">
+                <div class="team-member-name">Paulo Castro</div>
+                <div class="team-member-role">Pesquisador Graduando</div>
+            </div>
+            <div class="team-member fade-in">
+                <div class="team-member-name">Clarissa Lima</div>
+                <div class="team-member-role">Pesquisadora Graduanda</div>
+            </div>
+            <div class="team-member fade-in">
+                <div class="team-member-name">Daniel Ferreira</div>
+                <div class="team-member-role">Pesquisador Graduando</div>
+            </div>
+            <div class="team-member fade-in">
+                <div class="team-member-name">José Alexandre Oliveira</div>
+                <div class="team-member-role">Pesquisador Graduando</div>
+            </div>
+        </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-logo">OPAB<span>-CEBRAP</span></div>
@@ -670,7 +654,6 @@
     </footer>
 
     <script>
-        // Mobile Menu Toggle
         const menuToggle = document.getElementById('menuToggle');
         const navLinks = document.getElementById('navLinks');
 
@@ -681,7 +664,6 @@
             icon.classList.toggle('fa-times');
         });
 
-        // Close menu when clicking a link
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 navLinks.classList.remove('active');
@@ -691,7 +673,6 @@
             });
         });
 
-        // Smooth Scrolling
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -705,7 +686,6 @@
             });
         });
 
-        // Scroll Animation
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -723,7 +703,6 @@
             observer.observe(el);
         });
 
-        // Animated Counter for Statistics
         const animateCounter = (el, target) => {
             let current = 0;
             const increment = target / 100;
